@@ -37,6 +37,7 @@ pv-npc-fault-sim/
 ├── make_summary.py     # builds dataset/summary.csv + dataset/README.md tables
 ├── make_figures.py     # builds figures/*.png
 ├── figures/            # all simulation figures (PNG)
+├── dataset_csv/        # spreadsheet CSVs: overview (360 rows) + features (15 120 windows)
 ├── results/            # RESULTS.md, test and baseline outputs
 └── dataset/
     ├── README.md       # per-class and per-run tables
@@ -48,6 +49,8 @@ pv-npc-fault-sim/
 ## Dataset
 
 The repo includes the **full dataset**: 360 runs (18 classes × 20 weather profiles, 296 MB) in `dataset/runs/`. See [dataset/README.md](dataset/README.md) for the per-class and per-run tables, or open [dataset/labels.csv](dataset/labels.csv) and [dataset/summary.csv](dataset/summary.csv), which GitHub renders as tables. It can be regenerated exactly with `python make_dataset.py`.
+
+Spreadsheet versions (Excel / Google Sheets) are in [dataset_csv/](dataset_csv/): [dataset_overview.csv](dataset_csv/dataset_overview.csv) (one row per run) and [dataset_features.csv](dataset_csv/dataset_features.csv) (one row per 2-cycle window, 58 features + labels), built by `make_csv.py`.
 
 ## Quick start
 
@@ -137,5 +140,6 @@ Generated with `python make_figures.py`. The fault is applied at Tf = 0.8 s (das
 - `make_figures.py`: README figures
 - `make_summary.py`: dataset tables
 - `ml_baseline.py`: random-forest baseline
+- `make_csv.py`: spreadsheet CSVs in `dataset_csv/`
 - `pv_check.py`: exact PV maximum power
 - `results/`: test, baseline and PV-check outputs
