@@ -1,10 +1,10 @@
 """Generates the 360-run fault dataset (18 classes x 20 weather profiles), crash-safe and reproducible.
-Usage: python make_dataset.py [--pilot] [--workers N]"""
+Usage: python make_dataset.py [--sample | --pilot] [--workers N]"""
 import os, sys, csv, time, numpy as np
 from multiprocessing import Pool
 from pvnpc import run, COLS
 
-OUT = 'dataset_runs'
+OUT = os.path.join('dataset', 'runs')
 GROUP = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 8, 9, 10, 11]
 GNAME = ['Healthy', 'NPC_a_upper', 'NPC_a_lower', 'NPC_b_upper', 'NPC_b_lower', 'NPC_c_upper', 'NPC_c_lower',
          'Boost_open', 'Partial_shading', 'String_open', 'Sensor_gain', 'Grid_sag']
@@ -67,13 +67,15 @@ if __name__ == '__main__':
     rows = plan()
     if '--pilot' in sys.argv:
         rows = [r for r in rows if r['profile'] in (3, 18) and (r['profile'] == 3 or r['cls'] in (0, 14))]
-    with open('labels.csv', 'w', newline='') as fh:
+    if '--sample' in sys.argv:   # one run per class: profile 14 (1000 W/m2, 30 degC)
+        rows = [r for r in rows if r['profile'] == 14]
+    with open(os.path.join('dataset', 'labels.csv'), 'w', newline='') as fh:
         w = csv.DictWriter(fh, [k for k in rows[0] if k != 'kw']); w.writeheader()
         for r in rows: w.writerow({k: v for k, v in r.items() if k != 'kw'})
     nw = int(sys.argv[sys.argv.index('--workers') + 1]) if '--workers' in sys.argv else max(os.cpu_count() - 1, 1)
     run(Tstop=0.01)  # compile once
     t0 = time.time()
-    with Pool(nw) as pool, open('run_log.csv', 'a', newline='') as lg:
+    with Pool(nw) as pool, open(os.path.join('dataset', 'run_log.csv'), 'a', newline='') as lg:
         for k, (n, st, dt) in enumerate(pool.imap_unordered(do, rows), 1):
             csv.writer(lg).writerow([n, st, f'{dt:.2f}']); lg.flush()
             print(f'[{k}/{len(rows)}] run {n:03d} {st} {dt:.1f}s', flush=True)

@@ -1,5 +1,4 @@
-dataset_runs/
-run_log.csv
-labels.csv
+dataset/run_log.csv
 __pycache__/
 *.pyc
+*.log

@@ -27,17 +27,40 @@ It re-implements the circuit of the MATLAB example `power_PVarray_grid_det` (as 
 | C16 | Current-sensor gain fault (one phase reads 10–30 % low) | 10 |
 | C17 | Grid voltage sag (10–50 %) | 11 |
 
+## Repository layout
+
+```
+pv-npc-fault-sim/
+├── pvnpc.py            # plant + controller model
+├── test_note.py        # verification checks
+├── make_dataset.py     # dataset generator (--sample | --pilot | full)
+├── make_summary.py     # builds dataset/summary.csv + dataset/README.md tables
+├── make_figures.py     # builds figures/*.png
+├── figures/            # all simulation figures (PNG)
+└── dataset/
+    ├── README.md       # per-class and per-run tables
+    ├── labels.csv      # label table (rendered as a table on GitHub)
+    ├── summary.csv     # per-run features
+    └── runs/           # run_NNN.npz waveform files
+```
+
+## Dataset
+
+The repo includes a **sample dataset**: one run per class (18 runs, 1000 W/m², 30 °C, about 15 MB). See [dataset/README.md](dataset/README.md) for the tables, or open [dataset/labels.csv](dataset/labels.csv) and [dataset/summary.csv](dataset/summary.csv), which GitHub renders as tables. The full 360-run dataset (about 290 MB) is too large for the repo; regenerate it locally with `python make_dataset.py`.
+
 ## Quick start
 
 ```bash
 pip install numpy numba
 python test_note.py                 # verification checks (~30 s)
+python make_dataset.py --sample     # 18-run sample, one per class (~1 min)
 python make_dataset.py --pilot      # 20-run pilot (~1 min)
 python make_dataset.py              # full 360 runs (18 classes x 20 weather profiles)
+python make_summary.py              # rebuild dataset tables
 ```
 
 The dataset generator:
-- writes one file per run (`dataset_runs/run_001.npz` … `run_360.npz`), 0.2 s before to 0.4 s after the fault at 20 kHz, in float32;
+- writes one file per run (`dataset/runs/run_001.npz` … `run_360.npz`), 0.2 s before to 0.4 s after the fault at 20 kHz, in float32;
 - is crash-safe: re-running skips finished runs, and files are written atomically;
 - is reproducible: run *n* uses seed 1000 + *n*;
 - writes `labels.csv` (class, group, switch, profile, G, T, Tf, fault parameters) and `run_log.csv`;
@@ -46,7 +69,7 @@ The dataset generator:
 Load a run:
 ```python
 import numpy as np
-d = np.load('dataset_runs/run_001.npz')
+d = np.load('dataset/runs/run_014.npz')
 X, cols = d['data'], list(d['cols'])   # columns: t, Iinv_abc, Iabc_abc, Imeas_abc, Vabc, Vab, Vdc, vC1, vC2, vC3, Vpv, Ipv, G, D
 ```
 
@@ -93,3 +116,4 @@ Generated with `python make_figures.py`. The fault is applied at Tf = 0.8 s (das
 - `test_note.py`: verification checks
 - `make_dataset.py`: dataset generator
 - `make_figures.py`: README figures
+- `make_summary.py`: dataset tables
