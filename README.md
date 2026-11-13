@@ -67,6 +67,22 @@ The MPPT reaches the true maximum power point of the PV model at every irradianc
 
 **S1 vs S2 open faults:** with explicit diode paths, an S2 open fault sends the positive half-cycle current to −Vdc/2, while an S1 open fault sends it only to the midpoint. The phase current differs by about 6 % and the line voltage by about 70 %, so the two faults may be separable.
 
+## Simulation figures
+
+Generated with `python make_figures.py`. The fault is applied at Tf = 0.8 s (dashed line).
+
+**Healthy operation**: PV power ≈ 100.2 kW at MPP, Vdc held at 500 V, sinusoidal inverter current.
+
+![Healthy operation](figures/healthy.png)
+
+**NPC open-switch faults (S1a, S2a, S3a)**: the affected phase loses one half-cycle. S1a and S2a give similar currents but different line-voltage patterns.
+
+![Switch faults](figures/switch_faults.png)
+
+**Boost, shading, string, sensor and grid-sag faults**:
+
+![Other faults](figures/other_faults.png)
+
 ## Limitations
 - This is an independent re-implementation, not the Simulink model. Control gains are tuned here.
 - The grid is a stiff source behind the transformer leakage impedance (no feeder or loads). The transformer is linear and the Δ-Y phase shift is ignored.
@@ -76,3 +92,4 @@ The MPPT reaches the true maximum power point of the PV model at every irradianc
 - `pvnpc.py`: plant + controller model (`run(...)` returns a 20 kHz log array)
 - `test_note.py`: verification checks
 - `make_dataset.py`: dataset generator
+- `make_figures.py`: README figures
