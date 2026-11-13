@@ -1,0 +1,13 @@
+T1 | raw  | 12 groups            acc  87.0 %  macro-F1  81.1 %  (train 11340 / test 3780 windows)
+T1 | raw  | 18 classes           acc  85.0 %  macro-F1  85.4 %  (train 11340 / test 3780 windows)
+T2 | raw  | 12 groups            acc  79.3 %  macro-F1  67.2 %  (train 6804 / test 4536 windows)
+T2 | raw  | 18 classes           acc  51.2 %  macro-F1  57.9 %  (train 6804 / test 4536 windows)
+T3 | raw  | 12 groups            acc  87.8 %  macro-F1  80.5 %  (train 11340 / test 3780 windows)
+T3 | raw  | 18 classes           acc  86.7 %  macro-F1  86.0 %  (train 11340 / test 3780 windows)
+T1 | norm | 12 groups            acc  86.8 %  macro-F1  80.9 %  (train 11340 / test 3780 windows)
+T1 | norm | 18 classes           acc  85.7 %  macro-F1  86.1 %  (train 11340 / test 3780 windows)
+T2 | norm | 12 groups            acc  88.9 %  macro-F1  79.2 %  (train 6804 / test 4536 windows)
+T2 | norm | 18 classes           acc  75.7 %  macro-F1  72.4 %  (train 6804 / test 4536 windows)
+T3 | norm | 12 groups            acc  88.2 %  macro-F1  81.4 %  (train 11340 / test 3780 windows)
+T3 | norm | 18 classes           acc  86.9 %  macro-F1  86.4 %  (train 11340 / test 3780 windows)
+switch confusion (T1, 18 classes): {'total_offdiag': 44, 'within_pair': 44}

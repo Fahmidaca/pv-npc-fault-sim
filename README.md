@@ -37,6 +37,7 @@ pv-npc-fault-sim/
 ├── make_summary.py     # builds dataset/summary.csv + dataset/README.md tables
 ├── make_figures.py     # builds figures/*.png
 ├── figures/            # all simulation figures (PNG)
+├── results/            # RESULTS.md, test and baseline outputs
 └── dataset/
     ├── README.md       # per-class and per-run tables
     ├── labels.csv      # label table (rendered as a table on GitHub)
@@ -46,7 +47,7 @@ pv-npc-fault-sim/
 
 ## Dataset
 
-The repo includes a **sample dataset**: one run per class (18 runs, 1000 W/m², 30 °C, about 15 MB). See [dataset/README.md](dataset/README.md) for the tables, or open [dataset/labels.csv](dataset/labels.csv) and [dataset/summary.csv](dataset/summary.csv), which GitHub renders as tables. The full 360-run dataset (about 290 MB) is too large for the repo; regenerate it locally with `python make_dataset.py`.
+The repo includes the **full dataset**: 360 runs (18 classes × 20 weather profiles, 296 MB) in `dataset/runs/`. See [dataset/README.md](dataset/README.md) for the per-class and per-run tables, or open [dataset/labels.csv](dataset/labels.csv) and [dataset/summary.csv](dataset/summary.csv), which GitHub renders as tables. It can be regenerated exactly with `python make_dataset.py`.
 
 ## Quick start
 
@@ -57,6 +58,8 @@ python make_dataset.py --sample     # 18-run sample, one per class (~1 min)
 python make_dataset.py --pilot      # 20-run pilot (~1 min)
 python make_dataset.py              # full 360 runs (18 classes x 20 weather profiles)
 python make_summary.py              # rebuild dataset tables
+python ml_baseline.py               # random-forest baseline T1/T2/T3
+python pv_check.py                  # exact PV maximum power
 ```
 
 The dataset generator:
@@ -86,9 +89,25 @@ X, cols = d['data'], list(d['cols'])   # columns: t, Iinv_abc, Iabc_abc, Imeas_a
 | 30 % sag current ratio | 1.428 | 1.423 |
 | 200 W/m² | 16.7 kW | 19.3 kW |
 
-The MPPT reaches the true maximum power point of the PV model at every irradiance. The difference at low irradiance comes from the shunt-resistance loss in the module parameters.
+The MPPT reaches the true maximum power point at every irradiance. `pv_check.py` solves the PV equation exactly with the Simulink module parameters: 100.4 kW at 273.5 V at 1000 W/m², but only 16.7 kW at 200 W/m². The 19.3 kW reference value at 200 W/m² is therefore above the physical maximum of that array.
 
 **S1 vs S2 open faults:** with explicit diode paths, an S2 open fault sends the positive half-cycle current to −Vdc/2, while an S1 open fault sends it only to the midpoint. The phase current differs by about 6 % and the line voltage by about 70 %, so the two faults may be separable.
+
+## Results summary
+
+Full details: [results/RESULTS.md](results/RESULTS.md)
+
+- **Full dataset:** 360 runs generated in **8.4 min**, 0 errors, 296 MB, all included in `dataset/runs/`.
+- **Verification:** 11/13 checks agree with the Simulink reference values; the 2 low-irradiance mismatches are explained above.
+- **Random-forest baseline** (run-grouped splits, 2-cycle windows):
+
+| Test | 12 groups acc | 18 classes acc |
+|---|---|---|
+| T1 same weather (normalised) | 86.8 % | 85.7 % |
+| T2 unseen low irradiance, raw → normalised | 79.3 → **88.9 %** | 51.2 → **75.7 %** |
+| T3 fixed → changing weather (normalised) | 88.2 % | 86.9 % |
+
+- Switch faults C01–C12 are classified individually at 94–100 %, and all errors stay inside the S1/S2 or S3/S4 pair. The weak point is healthy vs shading vs string open, which look alike after the transient.
 
 ## Simulation figures
 
@@ -117,3 +136,6 @@ Generated with `python make_figures.py`. The fault is applied at Tf = 0.8 s (das
 - `make_dataset.py`: dataset generator
 - `make_figures.py`: README figures
 - `make_summary.py`: dataset tables
+- `ml_baseline.py`: random-forest baseline
+- `pv_check.py`: exact PV maximum power
+- `results/`: test, baseline and PV-check outputs

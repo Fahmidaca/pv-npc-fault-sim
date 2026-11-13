@@ -1,0 +1,6 @@
+ 1000 W/m2: array Pmax  100.4 kW at 273.5 V
+  800 W/m2: array Pmax   79.4 kW at 272.8 V
+  600 W/m2: array Pmax   58.4 kW at 271.1 V
+  400 W/m2: array Pmax   37.4 kW at 267.9 V
+  300 W/m2: array Pmax   27.0 kW at 264.9 V
+  200 W/m2: array Pmax   16.7 kW at 259.8 V

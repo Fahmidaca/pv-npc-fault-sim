@@ -1,0 +1,18 @@
+compiled in 0.9s
+Healthy PV power (kW)               100.236  note   100.400  PASS
+Grid-side current peak (A)            3.240  note     3.290  PASS
+Inverter current peak (A)           310.910  note   318.000  PASS
+Iinv/Iabc ratio                      95.970  note    96.400  PASS
+Mean Vdc (V)                        499.946  note   500.000  PASS
+PV power 200 W/m2 (kW)               16.652  note    19.300  FAIL
+C13 PV power (kW)                     0.000  note     0.000  PASS
+C13 PV voltage (V)                  320.625  note   320.800  PASS
+C14 shading nB=26 30% (kW)           71.248  note    72.400  PASS
+C15 string open nB=10 (kW)           84.254  note    84.800  PASS
+C15 string open nB=20 (kW)           68.295  note    69.700  PASS
+Cloud dip 1000->300 (kW)             26.952  note    30.000  FAIL
+C17 sag 30% current ratio             1.428  note     1.423  PASS
+S1 vs S2 ia difference                5.93 %  note 1.3 %
+S1 vs S2 Vab difference              71.83 %  note 5.6 %
+
+11/13 PASS, 13 simulations in 43.5s
